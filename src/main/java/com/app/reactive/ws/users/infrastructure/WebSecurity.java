@@ -17,7 +17,9 @@ public class WebSecurity {
     SecurityWebFilterChain httpSecurityWebFilterChain(ServerHttpSecurity http) {
         return http
         .authorizeExchange(
-            exchanges -> exchanges.pathMatchers(HttpMethod.POST, "/users").permitAll() // Users endpoint able to be access
+            exchanges -> exchanges
+                .pathMatchers(HttpMethod.POST, "/users").permitAll() // Users endpoint able to be access
+                .pathMatchers(HttpMethod.POST, "/login").permitAll()
             .anyExchange().authenticated()) // Other must be authenticated
             .csrf(ServerHttpSecurity.CsrfSpec::disable) // Not needed since we're creating RestFull services and not stateless service
             .build();
