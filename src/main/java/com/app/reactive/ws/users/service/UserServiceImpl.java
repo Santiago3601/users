@@ -3,6 +3,8 @@ package com.app.reactive.ws.users.service;
 import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.app.reactive.ws.users.data.dto.request.CreateUserRequest;
@@ -11,6 +13,7 @@ import com.app.reactive.ws.users.data.entity.UserEntity;
 import com.app.reactive.ws.users.repositories.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -32,6 +35,15 @@ public class UserServiceImpl implements UserService {
     public Mono<UserResponse> getUserById(UUID userId) {
         return userRepository
             .findById(userId)
+            .map(this::convertToResponse);
+    }
+
+
+    @Override
+    public Flux<UserResponse> findAll(int page, int limit) {
+        // if (page > 0) page = page -1; // This is used if I want the pages start from 1 instead of 0
+        Pageable pageable = PageRequest.of(page, limit);
+        return userRepository.findAllBy(pageable)
             .map(this::convertToResponse);
     }
 

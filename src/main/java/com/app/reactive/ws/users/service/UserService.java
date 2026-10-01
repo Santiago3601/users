@@ -5,6 +5,7 @@ import java.util.UUID;
 import com.app.reactive.ws.users.data.dto.request.CreateUserRequest;
 import com.app.reactive.ws.users.data.dto.response.UserResponse;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -14,5 +15,6 @@ public interface UserService {
 
     Mono<UserResponse> createUser(Mono<CreateUserRequest> createUserRequest);
     Mono<UserResponse> getUserById(UUID userId);
+    Flux<UserResponse> findAll(int page, int limit);
 
 }
