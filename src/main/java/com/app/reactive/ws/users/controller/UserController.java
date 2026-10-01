@@ -6,8 +6,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.reactive.ws.users.data.dto.request.CreateUserRequest;
 import com.app.reactive.ws.users.data.dto.response.UserResponse;
+import com.app.reactive.ws.users.service.UserService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -22,8 +24,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
+@RequiredArgsConstructor 
 @RequestMapping("/users")
 public class UserController {
+
+    private final UserService userService;
 
     @PostMapping
     public Mono<ResponseEntity<UserResponse>> createUser(
@@ -34,9 +39,16 @@ public class UserController {
         // return Mono.just(response);
 
         // Map is used to transform the contents of the Mono
-        return createUserRequest
-                .map(request -> new UserResponse(UUID.randomUUID(), request.getFirstName(), request.getLastName(),
-                        request.getEmail()))
+        // return createUserRequest
+        //         .map(request -> new UserResponse(UUID.randomUUID(), request.getFirstName(), request.getLastName(),
+        //                 request.getEmail()))
+//         .map(userResponse -> ResponseEntity
+        //                 .status(HttpStatus.CREATED)
+        //                 .location(URI.create("/users/" + userResponse.getId()))
+        //                 .body(userResponse));
+
+
+        return userService.createUser(createUserRequest)
                 .map(userResponse -> ResponseEntity
                         .status(HttpStatus.CREATED)
                         .location(URI.create("/users/" + userResponse.getId()))
@@ -45,8 +57,11 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public Mono<UserResponse> getUser(@PathVariable("userId") UUID userId) {
-        return Mono.just(new UserResponse(UUID.randomUUID(), "Santiago", "Ruiz", "a@a.cc"));
+    public Mono<ResponseEntity<UserResponse>> getUser(@PathVariable("userId") UUID userId) {
+        // return Mono.just(new UserResponse(UUID.randomUUID(), "Santiago", "Ruiz", "a@a.cc"));
+        return userService.getUserById(userId)
+                .map(userResponse -> ResponseEntity.status(HttpStatus.OK).body(userResponse))
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).build()));
     }
 
     @GetMapping

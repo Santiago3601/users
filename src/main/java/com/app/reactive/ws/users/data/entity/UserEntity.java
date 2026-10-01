@@ -11,16 +11,16 @@ import lombok.Setter;
 
 @Getter 
 @Setter 
-@Table(name = "users")
+@Table(name = "USERS")
 public class UserEntity {
 
     @Id 
     private UUID id;
 
-    @Column(value = "first_name")
+    @Column(value = "FIRST_NAME")
     private String firstName;
 
-    @Column(value = "last_name")
+    @Column(value = "LAST_NAME")
     private String lastName;
 
     private String email;
