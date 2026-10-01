@@ -13,5 +13,6 @@ import reactor.core.publisher.Mono;
 public interface UserService {
 
     Mono<UserResponse> createUser(Mono<CreateUserRequest> createUserRequest);
+    Mono<UserResponse> getUserById(UUID userId);
 
 }

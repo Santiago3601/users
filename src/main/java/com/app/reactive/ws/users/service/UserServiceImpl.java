@@ -28,6 +28,13 @@ public class UserServiceImpl implements UserService {
                 .mapNotNull(entity -> convertToResponse(entity));
     }
 
+    @Override
+    public Mono<UserResponse> getUserById(UUID userId) {
+        return userRepository
+            .findById(userId)
+            .map(this::convertToResponse);
+    }
+
     private UserEntity convertToEntity(CreateUserRequest createUserRequest) {
         UserEntity userEntity = new UserEntity();
         BeanUtils.copyProperties(createUserRequest, userEntity);

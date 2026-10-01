@@ -57,8 +57,11 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public Mono<UserResponse> getUser(@PathVariable("userId") UUID userId) {
-        return Mono.just(new UserResponse(UUID.randomUUID(), "Santiago", "Ruiz", "a@a.cc"));
+    public Mono<ResponseEntity<UserResponse>> getUser(@PathVariable("userId") UUID userId) {
+        // return Mono.just(new UserResponse(UUID.randomUUID(), "Santiago", "Ruiz", "a@a.cc"));
+        return userService.getUserById(userId)
+                .map(userResponse -> ResponseEntity.status(HttpStatus.OK).body(userResponse))
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).build()));
     }
 
     @GetMapping
