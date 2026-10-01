@@ -1,10 +1,13 @@
 package com.app.reactive.ws.users.service;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.app.reactive.ws.users.data.dto.request.CreateUserRequest;
@@ -62,6 +65,17 @@ public class UserServiceImpl implements UserService {
         UserResponse response = new UserResponse();
         BeanUtils.copyProperties(entity, response);
         return response;
+    }
+
+    @Override
+    public Mono<UserDetails> findByUsername(String username) {
+        return userRepository.findByEmail(username)
+        .map(userEntity -> User
+            .withUsername(userEntity.getEmail())
+            .password(userEntity.getPassword())
+            .authorities(new ArrayList<>())
+            .build()
+        );
     }
 
 }
