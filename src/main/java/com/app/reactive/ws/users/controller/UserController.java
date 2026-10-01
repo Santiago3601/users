@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
-@RequiredArgsConstructor 
+@RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
 
@@ -66,13 +66,15 @@ public class UserController {
 
     @GetMapping
     public Flux<UserResponse> getUsers(
-        @RequestParam(value = "offset", defaultValue = "0") int offset,
-        @RequestParam(value = "limit", defaultValue = "50") int limit ) {
-        return Flux.just(
-            new UserResponse(UUID.randomUUID(), "Santiago", "Ruiz", "a@a.cc"),
-            new UserResponse(UUID.randomUUID(), "Santiago", "Ruiz", "a@a.cc"),
-            new UserResponse(UUID.randomUUID(), "Santiago", "Ruiz", "a@a.cc")
-        );
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "limit", defaultValue = "50") int limit) {
+        // return Flux.just(
+        //         new UserResponse(UUID.randomUUID(), "Santiago", "Ruiz", "a@a.cc"),
+        //         new UserResponse(UUID.randomUUID(), "Santiago", "Ruiz", "a@a.cc"),
+        //         new UserResponse(UUID.randomUUID(), "Santiago", "Ruiz", "a@a.cc")
+        // );
+
+        return userService.findAll(page, limit);
     }
 
 
