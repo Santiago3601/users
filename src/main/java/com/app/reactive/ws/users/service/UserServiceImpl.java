@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.app.reactive.ws.users.data.dto.request.CreateUserRequest;
 import com.app.reactive.ws.users.data.dto.response.UserResponse;
@@ -14,18 +15,20 @@ import com.app.reactive.ws.users.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Mono<UserResponse> createUser(Mono<CreateUserRequest> createUserRequestMono) {
 
         return createUserRequestMono
-                .mapNotNull(request -> convertToEntity(request))
+                .flatMap(request -> convertToEntity(request))
                 .flatMap(entity -> userRepository.save(entity))
                 .mapNotNull(entity -> convertToResponse(entity));
         }
@@ -46,10 +49,13 @@ public class UserServiceImpl implements UserService {
             .map(this::convertToResponse);
     }
 
-    private UserEntity convertToEntity(CreateUserRequest createUserRequest) {
-        UserEntity userEntity = new UserEntity();
-        BeanUtils.copyProperties(createUserRequest, userEntity);
-        return userEntity;
+    private Mono<UserEntity> convertToEntity(CreateUserRequest createUserRequest) {
+        return Mono.fromCallable(() -> { // Utilize a thread waiting for being used in order to not being blocking the password encryption
+            UserEntity userEntity = new UserEntity();
+            BeanUtils.copyProperties(createUserRequest, userEntity);
+            userEntity.setPassword(passwordEncoder.encode(createUserRequest.getPassword()));
+            return userEntity;
+        }).subscribeOn(Schedulers.boundedElastic());
     }
 
     private UserResponse convertToResponse(UserEntity entity) {
