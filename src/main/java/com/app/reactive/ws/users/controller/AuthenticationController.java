@@ -9,9 +9,7 @@ import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -32,12 +30,12 @@ public class AuthenticationController {
                 .map(authResult -> ResponseEntity.ok()
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + authResult.get("token"))
                         .header("UserId", authResult.get("userId"))
-                        .build())
-                .onErrorReturn(BadCredentialsException.class, 
-                        ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body("Invalid Credentials"))
-                .onErrorReturn(Exception.class, ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .build());
+                // .onErrorReturn(BadCredentialsException.class, 
+                //         ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                //         .body("Invalid Credentials"))
+                // .onErrorReturn(Exception.class, ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                //         .build());
                 
 
         }
