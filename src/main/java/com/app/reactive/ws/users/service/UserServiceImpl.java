@@ -3,9 +3,12 @@ package com.app.reactive.ws.users.service;
 import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.app.reactive.ws.users.data.dto.request.CreateUserRequest;
 import com.app.reactive.ws.users.data.dto.response.UserResponse;
@@ -28,7 +31,9 @@ public class UserServiceImpl implements UserService {
         return createUserRequestMono
                 .mapNotNull(request -> convertToEntity(request))
                 .flatMap(entity -> userRepository.save(entity))
-                .mapNotNull(entity -> convertToResponse(entity));
+                .mapNotNull(entity -> convertToResponse(entity))
+                .onErrorMap(DuplicateKeyException.class, 
+                    exception -> new ResponseStatusException(HttpStatus.CONFLICT, exception.getMessage()));
     }
 
     @Override
