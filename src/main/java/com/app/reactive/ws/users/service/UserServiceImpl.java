@@ -6,7 +6,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import com.app.reactive.ws.users.data.dto.request.CreateUserRequest;
 import com.app.reactive.ws.users.data.dto.response.UserResponse;
 import com.app.reactive.ws.users.data.entity.UserEntity;
@@ -29,7 +28,7 @@ public class UserServiceImpl implements UserService {
                 .mapNotNull(request -> convertToEntity(request))
                 .flatMap(entity -> userRepository.save(entity))
                 .mapNotNull(entity -> convertToResponse(entity));
-    }
+        }
 
     @Override
     public Mono<UserResponse> getUserById(UUID userId) {
