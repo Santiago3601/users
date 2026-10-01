@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/users")
 public class UserController {
     @PostMapping
-    public Mono<String> createUser(@RequestBody @Valid Mono<CreateUserRequest> entity) {
-        return Mono.just("Ok");
+    public Mono<CreateUserResponse> createUser(@RequestBody @Valid Mono<CreateUserRequest> createUserRequest) {
+        
+        // Imperative programming
+        CreateUserResponse response = new CreateUserResponse();
+        return Mono.just(response);
     }
     
     
