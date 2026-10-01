@@ -1,4 +1,4 @@
-package com.app.reactive.ws.users.entity;
+package com.app.reactive.ws.users.data.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
