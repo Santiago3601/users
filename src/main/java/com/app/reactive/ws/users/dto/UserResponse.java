@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter 
 @NoArgsConstructor 
 @AllArgsConstructor 
-public class CreateUserResponse {
+public class UserResponse {
     private UUID id;
     private String firstName;
     private String lastName;

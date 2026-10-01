@@ -16,23 +16,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
     @PostMapping
-    public Mono<ResponseEntity<CreateUserResponse>> createUser(
+    public Mono<ResponseEntity<UserResponse>> createUser(
             @RequestBody @Valid Mono<CreateUserRequest> createUserRequest) {
 
         // // Imperative programming
-        // CreateUserResponse response = new CreateUserResponse();
+        // UserResponse response = new UserResponse();
         // return Mono.just(response);
     
         // Map is used to transform the contents of the Mono
         return createUserRequest
-                .map(request -> new CreateUserResponse(UUID.randomUUID(), request.getFirstName(), request.getLastName(),
+                .map(request -> new UserResponse(UUID.randomUUID(), request.getFirstName(), request.getLastName(),
                         request.getEmail()))
                 .map(userResponse -> ResponseEntity
                     .status(HttpStatus.CREATED)
