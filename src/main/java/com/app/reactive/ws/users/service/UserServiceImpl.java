@@ -3,14 +3,9 @@ package com.app.reactive.ws.users.service;
 import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
 import com.app.reactive.ws.users.data.dto.request.CreateUserRequest;
 import com.app.reactive.ws.users.data.dto.response.UserResponse;
 import com.app.reactive.ws.users.data.entity.UserEntity;
@@ -32,18 +27,8 @@ public class UserServiceImpl implements UserService {
         return createUserRequestMono
                 .mapNotNull(request -> convertToEntity(request))
                 .flatMap(entity -> userRepository.save(entity))
-                .mapNotNull(entity -> convertToResponse(entity))
-                .onErrorMap( 
-                    throwable -> {
-                        if (throwable instanceof DuplicateKeyException) {
-                            return new ResponseStatusException(HttpStatus.CONFLICT, throwable.getMessage());
-                        } else if (throwable instanceof DataIntegrityViolationException) {
-                            return new ResponseStatusException(HttpStatus.BAD_REQUEST, throwable.getMessage());
-                        } else {
-                            return new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, throwable.getMessage());
-                        }
-                    });
-    }
+                .mapNotNull(entity -> convertToResponse(entity));
+        }
 
     @Override
     public Mono<UserResponse> getUserById(UUID userId) {
