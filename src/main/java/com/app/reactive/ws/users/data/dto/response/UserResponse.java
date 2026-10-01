@@ -1,4 +1,4 @@
-package com.app.reactive.ws.users.dto;
+package com.app.reactive.ws.users.data.dto.response;
 
 import java.util.UUID;
 

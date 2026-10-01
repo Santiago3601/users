@@ -4,8 +4,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.reactive.ws.users.dto.UserResponse;
-import com.app.reactive.ws.users.entity.CreateUserRequest;
+import com.app.reactive.ws.users.data.dto.request.CreateUserRequest;
+import com.app.reactive.ws.users.data.dto.response.UserResponse;
 
 import jakarta.validation.Valid;
 import reactor.core.publisher.Flux;
